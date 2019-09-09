@@ -1,0 +1,44 @@
+class Solution(object):
+    def regionsBySlashes(self, grid):
+        """
+        :type grid: List[str]
+        :rtype: int
+        
+        将原来n*n方格转为3n * 3n 方格。求0的连通量个数。
+        """
+        n = len(grid)
+        #将grid转化为3*3的0/1矩阵,需注意python中深复制与浅复制的区别。
+        #注意：浅复制会导致一次性修改所有行的值
+        list1 = [[0]*3*n for i in range(3*n)]
+
+        for i in range(n):
+            for j in range(n):
+                if grid[i][j]=='/':
+                    list1[i*3][j*3+2]=1    
+                    list1[(i*3+1)][(j*3+1)]=1
+                    list1[i*3+2][j*3]=1
+                if grid[i][j]=='\\':
+                    list1[i*3][j*3]=1
+                    list1[i*3+1][j*3+1]=1
+                    list1[i*3+2][j*3+2]=1
+                    
+        #找到0代表的区域，并递归将所有与其属于同一区域的0转变为1，避免重复计数
+        #注意：list在修改时无需声明为全局变量，直接传入即可
+        #注意避免list的越界问题
+        def isroom(list1,i,j):
+            if (i>=0)&(j>=0)&(i<len(list1))&(j<len(list1)):
+                if (list1[i][j]==0):
+                    list1[i][j]=1
+                    isroom(list1,i,j+1)
+                    isroom(list1,i,j-1)
+                    isroom(list1,i+1,j)
+                    isroom(list1,i-1,j)
+
+        res = 0
+        for i in range(n*3):
+            for j in range(n*3):
+                if list1[i][j]==0:
+                    isroom(list1,i,j)
+                    res+=1
+
+        return res
