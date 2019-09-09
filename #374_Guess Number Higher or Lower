@@ -1,0 +1,31 @@
+# The guess API is already defined for you.
+# @param num, your guess
+# @return -1 if my number is lower, 1 if my number is higher, otherwise return 0
+# def guess(num):
+
+class Solution(object):
+    def guessNumber(self, n):
+        """
+        :type n: int
+        :rtype: int
+        直接使用二分查找来找到需要的数字。
+        从中间的数字开始，将数字传递到 guessguess 函数里。
+        如果返回 -1，说明中间数字比答案大，就查找更小的那一半。
+        类似的，如果返回1，查找更大的一半，直到找到答案。
+        """
+        left = 1
+        right = n
+        
+        #整除会导致直接的四舍五入，因此二分法查找应使用left+（right-left）//2做为中界。
+        #注意：若（left+right）//2作为中界会在右侧发生越界。
+        while left<=right:
+            g = left+(right-left)//2
+            f = guess(g)
+            if f==0:
+                return g
+            elif f==1:
+                #猜小了
+                left = g+1
+            else:
+                right = g-1
+                
