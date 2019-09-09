@@ -22,7 +22,7 @@ class Solution(object):
             g = left+(right-left)//2
             f = guess(g)
             if f==0:
-                return g
+                return g#返回结果
             elif f==1:
                 #猜小了
                 left = g+1
