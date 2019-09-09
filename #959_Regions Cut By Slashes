@@ -4,6 +4,7 @@ class Solution(object):
         :type grid: List[str]
         :rtype: int
         
+        通过将每个1*1方格转变为一个3*3的0/1矩阵，
         将原来n*n方格转为3n * 3n 方格。求0的连通量个数。
         """
         n = len(grid)
