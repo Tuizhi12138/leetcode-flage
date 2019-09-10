@@ -1,0 +1,22 @@
+class Solution(object):
+    def findMaxConsecutiveOnes(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        思路：设置集合，将所有的1s的连续值全部记录，之后使用max求得最大值
+        优化：每次遇到0，比较res与co，保存max为res，再重置co；省去设置set记录
+        """
+        res_l = set([0])
+        co = 0
+
+        for i in nums:
+            if i==0:
+                co=0
+            elif i==1:
+                co+=1
+                res_l.add(co)
+
+        res = max(res_l)
+        
+        return res
+        
