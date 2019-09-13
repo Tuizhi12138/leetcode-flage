@@ -1,0 +1,14 @@
+class Solution(object):
+    def firstMissingPositive(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        一个连续的数列，未出现的最小正整数必小于等于其长度加一。
+        因此，遍历[1,len(nums)+2)的整数，判断其是否在nums中出现，若未出现则return结果，退出函数。
+        """
+
+        for i in range(1,len(nums)+2):
+            if i in nums:
+                continue
+            else:
+                return i
