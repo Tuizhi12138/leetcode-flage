@@ -1,0 +1,33 @@
+class Solution(object):
+    def maxChunksToSorted(self, arr):
+        """
+        :type arr: List[int]
+        :rtype: int
+        我的思路：（适用条件更宽松）
+        反向遍历，找到所有界值；界值条件为：将从头至上次切分点的数列记为A，每个点将A分为A1,A2。则max(A2)==MAX(A) AND MAX(A1)<MIN(A2)时该点为界值。
+        
+        优化思路：
+        由于数列为0，开始的连续正整数序列。因此，从头开始，只需满足局部最大值能够回到其值所对应的位置即为满足条件的一个块。
+        
+        """
+        res = 0
+        len1 = len(arr)
+
+
+        for i in range(len1):
+            if res==0:
+                if max(arr)==max(arr[-(i+1):]):
+                    if i==(len1-1):
+                        res+=1
+                        return res
+                    elif min(arr[-(i+1):])>max(arr[:-(i+1)]):
+                        res+=1
+                        last1 = i
+            else:
+                if max(arr[-(i+1):-(last1+1)])==max(arr[:-(last1+1)]):
+                    if i==(len1-1):
+                        res+=1
+                        return res
+                    elif min(arr[-(i+1):-(last1+1)])>max(arr[:-(i+1)]):
+                        res+=1
+                        last1 = i
