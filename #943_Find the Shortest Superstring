@@ -1,0 +1,84 @@
+class Solution(object):
+    def shortestSuperstring(self, A):
+        """
+        :type A: List[str]
+        :rtype: str
+        """
+        N = len(A)
+
+        overlaps = [[0] * N for _ in range(N)]#生成一个 N*N 的全0list
+        #遍历A 2次，将两两不相同的A中元素的首尾重复情况在overlaps中进行记录
+        for i, x in enumerate(A):
+            for j, y in enumerate(A):
+                if i != j:
+                    for ans in range(min(len(x), len(y)), -1, -1):#从x，y的较短数开始反向遍历y中头部是否为x结尾
+                        if x.endswith(y[:ans]):
+                            overlaps[i][j] = ans
+                            break#找到x中与y重复的最大子字符串，记录并退出遍历
+        #此时overlaps为一个主对角线为0的方阵
+
+        # << 符号是按位左移的意思，就是把对象转为2进制，有效数字往左移动。可以理解为对象乘以2的单位次方。
+
+        # >> 是右移，右移1位相当于除以2。
+
+        dp = [[0] * N for _ in range(1<<N)]#生成一个 N^2 *N 的全0list
+        # dp(mask, i) 表示已经选出的字符串为 mask，且最后一个选出的字符串是 A[i] 时的重复部分的最大长度。
+        parent = [[None] * N for _ in range(1<<N)]#生成一个 N^2 *N 的全 None list
+
+
+        '''
+        遍历所有可能的取出方式，以二进制数的形式表示，即mask
+        依次计算若在mask中最后一个取出的为第bit位元素的情况下，可能增加的最大overlap值
+        '''
+
+        for mask in range(1, 1 << N):
+            '''
+            使用二进制来遍历所有可能的已取出字符串情况
+            已N==5为例：
+            00000表示未取出任何字符串，00001、00010、00100、01000、10000表示取出一个字符串，11111（2^5-1）表示取出全部字符串。。。
+            '''
+            for bit in range(N):
+                if (mask >> bit) & 1:#判断第bit位字符串是否在mask中被取出
+                    '''
+                    &,按位运算符，二进制表示后两者均为1的位置返回结果为1；所有x&1为判断x是否最后一位为1
+                    若第bit位字符串被取出，则其为1，(mask >> bit) & 1 的判断结果即为1，eg有：
+                    mask==4==00100，bit==2，则(mask >> bit)==1,1&1==True
+                    '''
+                    pmask = mask^(1 << bit)#将mask的第bit位变为0，即未加入第bit位字符之前的情况
+                    # mask^(1 << bit) 结果使mask中第bit位的1变为0，这是因为已经判断过bit必定是再mask中位1的
+                    if pmask == 0: continue#去除添加bit位元素前未取出的情况：00000；即mask为00100，这类的情况，这种情况下添加第bit位元素不会导致overlap增加
+                    for i in range(N):
+                        if (pmask >> i) & 1:#判断第i位字符串是否在pmask中被取出
+                            value = dp[pmask][i] + overlaps[i][bit]
+                            #计算在已取出pmask，且最后一个取出是i的情况下，
+                            #再添加bit位的字符串后形成的新字符串能够重叠的长度
+
+                            #如果上面的值大于dp中的记录，则将对应位置的dp、parent记录更新
+                            if value > dp[mask][bit]:
+                                dp[mask][bit] = value
+                                parent[mask][bit] = i#记录最大overlap时mask的pmask结尾的元素i
+
+
+        #找到最大overlap的序列的组合的排列方式
+        perm = []#初始化的记录
+        mask = (1<<N) - 1#初始化的取出结果，全部取出
+        i = max(range(N), key = dp[-1].__getitem__)#最大overlap时的最后一个添加的字符串位置
+        while i is not None:
+            perm.append(i)#将最大overlap时的上一个添加的字符串位置记录
+            mask, i = mask ^ (1<<i), parent[mask][i]#回溯未加入i时的mask，i变为最大overlap时i所对接的上一个字符串的位置。
+
+
+        perm = perm[::-1]#将perm颠倒，变为字符串的取出顺序
+        seen = [False] * N#初始化seen
+        for x in perm:
+            seen[x] = True
+        perm.extend([i for i in range(N) if not seen[i]])#将perm中未包含的元素的位置添加至perm中
+
+
+        #基于元素的位置perm与元素之间overlap的长度，将最终的结果生成
+        ans = [A[perm[0]]]
+        for i in range(1, len(perm)):
+            overlap = overlaps[perm[i-1]][perm[i]]
+            ans.append(A[perm[i]][overlap:])
+
+        return "".join(ans)        
