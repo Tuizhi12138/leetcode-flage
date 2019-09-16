@@ -1,0 +1,13 @@
+class Solution(object):
+    def maximumProduct(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        最大乘积：
+        排序，之后最大乘积只可能在c*d*e和a*b*c两种情况下出现。
+        """
+        nums.sort()
+        a,b,c = nums[-3:]
+        d,e = nums[:2]
+        res = max((c*d*e),(a*b*c))  
+        return res
