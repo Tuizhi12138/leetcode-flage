@@ -1,0 +1,92 @@
+from collections import defaultdict
+class Solution:
+    def solveSudoku(self, board):
+        """
+        :type board: List[List[str]]
+        :rtype: void Do not return anything, modify board in-place instead.
+        """
+        
+        def could_place(d, row, col):
+            """
+            检测d是否是在row行中出现、col列中出现、所属的3*3方格中出现。若从未出现，返回True；否则返回Fasle。
+            """
+            return not (d in rows[row] or d in columns[col] or \
+                    d in boxes[box_index(row, col)])
+        
+        def place_number(d, row, col):
+            """
+            将数字d放入row行，col列中
+            """
+            rows[row][d] += 1
+            columns[col][d] += 1
+            boxes[box_index(row, col)][d] += 1
+            board[row][col] = str(d)
+            
+        def remove_number(d, row, col):
+            """
+            删除row行col列的d
+            """
+            del rows[row][d]
+            del columns[col][d]
+            del boxes[box_index(row, col)][d]
+            board[row][col] = '.'    
+            
+        def place_next_numbers(row, col):
+            """
+            放置row行col列后，放置下一个数字
+            """
+            # 如果目前已是最后一个格子，则表明结果已求出
+            if col == N - 1 and row == N - 1:
+                nonlocal sudoku_solved#声明引用上一层函数中的局部变量
+                sudoku_solved = True   
+            else:
+                # 如果在每一行的最后一个，则跳转至下一行的第一个元素
+                if col == N - 1:
+                    backtrack(row + 1, 0)
+                # 如在中间，跳转至同行的下一列
+                else:
+                    backtrack(row, col + 1)
+                
+                
+        def backtrack(row = 0, col = 0):
+            """
+            回溯函数
+            """
+            # 如果该格子为空
+            if board[row][col] == '.':
+                # 迭代1-9的全部数字
+                for d in range(1, 10):
+                    if could_place(d, row, col):
+                        place_number(d, row, col)
+                        place_next_numbers(row, col)
+                        # 如果当前不是最后一个格子就无法在下一个放入数字，便会移除当前放入的数字尝试下一个能在该格子放入的数字
+                        # 如果能在当前格子放入的数字均无法满足条件，便会完成其for循环，返回上一层函数即放置之前一个格子的函数
+                        # 并将此处的数值移除，重新迭代下一个
+                        # 依次类推
+                        # 最终找到能够全部放置满足条件的数字的唯一解。
+                        # since the single unique solution is promised
+                        if not sudoku_solved:
+                            remove_number(d, row, col)
+            else:
+                place_next_numbers(row, col)
+                    
+        # 小块区域大小
+        n = 3
+        # 行长
+        N = n * n
+        # 计算相应col、row所属的小块区域index
+        box_index = lambda row, col: (row // n ) * n + col // n
+        
+        # 初始化rows、columns、boxes:默认值为0的字典构成的长度为N的list
+        rows = [defaultdict(int) for i in range(N)]
+        columns = [defaultdict(int) for i in range(N)]
+        boxes = [defaultdict(int) for i in range(N)]
+        #将给定的board的值传入rows、cols、boxes
+        for i in range(N):
+            for j in range(N):
+                if board[i][j] != '.': 
+                    d = int(board[i][j])
+                    place_number(d, i, j)
+        
+        sudoku_solved = False
+        backtrack()
