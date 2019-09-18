@@ -1,0 +1,28 @@
+class Solution:
+    def gridIllumination(self, N: int, lamps: List[List[int]], queries: List[List[int]]) -> List[int]:
+        # 建立4个dict分别把横竖两斜记录：
+        dict_x, dict_y, dict_d1, dict_d2, res = {}, {}, {}, {}, []
+        set_lamps = set()  # 加了这玩意才能过～～～
+        for x, y in lamps:
+            dict_x[x] = dict_x.get(x, 0)+1
+            dict_y[y] = dict_y.get(y, 0)+1
+            dict_d1[x+y] = dict_d1.get(x+y, 0)+1
+            dict_d2[x-y] = dict_d2.get(x-y, 0)+1
+            set_lamps.add((x, y))
+        for x, y in queries:
+            if dict_x.get(x, 0) or dict_y.get(y, 0) or dict_d1.get(x+y, 0) or dict_d2.get(x-y, 0):
+                res.append(1)
+            else:
+                res.append(0)
+            for i in [-1, 0, 1]:
+                for j in [-1, 0, 1]:
+                    loc_i, loc_j = x+i, y+j
+                    if (loc_i, loc_j) in set_lamps:
+                        dict_x[loc_i] -= 1
+                        dict_y[loc_j] -= 1
+                        dict_d1[loc_i+loc_j] -= 1
+                        dict_d2[loc_i-loc_j] -= 1
+                        set_lamps.remove((loc_i, loc_j))
+
+        return res
+        # print(res)
