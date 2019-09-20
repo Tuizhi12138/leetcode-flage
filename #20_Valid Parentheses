@@ -1,0 +1,18 @@
+class Solution:
+    def isValid(self, s: str) -> bool:
+        
+        l1 = []
+        di = {')':'(',']':'[','}':'{'}
+
+        for i in s:
+            if i in di.keys():
+                top = l1.pop() if l1 else '#'
+                if top != di.get(i):
+                    return False
+            else:
+                l1.append(i)
+                
+        if not l1:
+            return True
+        else:
+            return False
