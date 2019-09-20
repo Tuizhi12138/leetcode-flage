@@ -1,0 +1,20 @@
+class Solution:
+    def longestCommonPrefix(self, strs: List[str]) -> str:
+        def find_com(s1,s2):
+            n = min(len(s1),len(s2))
+            res = ''
+            for i in range(n):
+                if s1[i]==s2[i]:
+                    res+=s1[i]
+                else:
+                    break
+            return res
+        if strs:
+            res = strs[0]
+        else:
+            res = ''
+
+        for ii in strs:
+            res=find_com(res,ii)
+
+        return res
