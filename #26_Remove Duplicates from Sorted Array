@@ -1,0 +1,16 @@
+class Solution:
+    def removeDuplicates(self, nums: List[int]) -> int:
+    '''
+    双指针更优
+    '''
+        site = 0
+        lasted = (nums[0]-1) if nums else 0
+
+        while len(nums)>site:
+            if nums[site] ==lasted:
+                nums.remove(lasted)
+            else:
+                lasted=nums[site]
+                site+=1
+
+        return (site+1)
