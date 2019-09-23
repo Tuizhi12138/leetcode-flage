@@ -1,0 +1,13 @@
+class Solution:
+    def plusOne(self, digits: List[int]) -> List[int]:
+
+        num = 0
+        N = len(digits)
+
+        for i in range(N):
+            num += digits[i]*10**(N-i-1)
+
+        num +=1
+        res = list(str(num))
+        
+        return res
