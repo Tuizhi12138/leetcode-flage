@@ -1,0 +1,25 @@
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution:
+    def minDepth(self, root: TreeNode) -> int:
+        if not root:
+            return 0
+        else:
+            current = [(1, root)]
+            
+        while current:
+            depth,root = current.pop()
+            children = [root.left,root.right]
+            
+            if not any(children):
+                return depth
+            for i in children:
+                if i:
+                    tmp = [(depth+1,i)]
+                    tmp.extend(current)
+                    current = tmp
