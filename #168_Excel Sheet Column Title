@@ -1,0 +1,15 @@
+class Solution:
+    def convertToTitle(self, n: int) -> str:
+        def c(n):
+            if not n:
+                return ''
+            a = n//26
+            b = n-a*26
+
+            if not a:
+                return chr(64+b)
+            if b==0:
+                return c(a-1)+chr(64+26)
+            return c(a)+c(b)
+        
+        return c(n)
