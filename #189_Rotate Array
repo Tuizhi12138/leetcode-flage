@@ -1,0 +1,17 @@
+class Solution:
+    def rotate(self, nums: List[int], k: int) -> None:
+        """
+        Do not return anything, modify nums in-place instead.
+        """
+        def turn1(a,start1,end1):
+            left = start1
+            right = end1
+            while left<right:
+                a[left],a[right] = a[right],a[left]
+                left+=1
+                right-=1
+            return a
+        k = k%len(nums)
+        nums = turn1(nums,0,len(nums)-1)
+        nums = turn1(nums,0,k-1)
+        nums = turn1(nums,k,len(nums)-1)
