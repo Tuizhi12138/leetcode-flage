@@ -1,0 +1,19 @@
+class Solution:
+    def getHint(self, secret: str, guess: str) -> str:
+        list1 = [0 for i in range(len(secret))]
+        list2 = [0 for i in range(len(secret))]
+
+        for nedle in range(1,len(secret)+1):
+            if secret[-nedle]==guess[-nedle]:
+                list1[-nedle] = 1
+                list2[-nedle] = 1
+                
+        for nedle in range(1,len(secret)+1):
+            if list2[-nedle]==0:
+                for i in range(1,len(guess)+1):
+                    if secret[-nedle]==guess[-i] and list1[-i]==0:
+                        list1[-i] = 1
+                        break
+                        
+
+        return str(sum(list2))+'A'+str(sum(list1)-sum(list2))+'B'
