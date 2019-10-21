@@ -1,0 +1,14 @@
+class Solution:
+    def intersect(self, nums1: List[int], nums2: List[int]) -> List[int]:
+        d1 = {}
+        s1 = []
+        
+        for i in nums1:
+            d1[i] = d1.get(i,0)+1
+            
+        for i in nums2:
+            if i in d1.keys() and d1[i]>0:
+                s1.append(i)
+                d1[i] -= 1
+        
+        return s1
