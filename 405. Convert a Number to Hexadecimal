@@ -1,0 +1,19 @@
+class Solution:
+    def toHex(self, num: int) -> str:
+        if num==0:
+            return '0'
+
+        res = ''
+
+        if num>0:
+            while num:
+                tmp = num%16
+                if tmp>9:
+                    res = chr(tmp-9+96)+res
+                else:
+                    res = str(tmp)+res
+                num = num//16
+            return res
+        else:
+            num += 16**8
+            return self.toHex(num)
